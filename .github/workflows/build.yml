@@ -1,0 +1,41 @@
+name: Build VST3 Plugin
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Instalar CMake
+        uses: jwlawson/actions-setup-cmake@v1
+        with:
+          cmake-version: '3.26'
+
+      - name: Configurar projeto
+        run: |
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release
+
+      - name: Compilar plugin
+        run: |
+          cd build
+          cmake --build . --config Release
+
+      - name: Empacotar VST3
+        run: |
+          mkdir -p artifacts
+          cp -r build/ReverbPlugin_artefacts/Release/VST3 artifacts/
+          cp -r build/ReverbPlugin_artefacts/Release/AU artifacts/ || true
+
+      - name: Guardar plugin compilado
+        uses: actions/upload-artifact@v4
+        with:
+          name: MeuReverb-macOS
+          path: artifacts/
+          retention-days: 30
