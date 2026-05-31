@@ -16,9 +16,7 @@ jobs:
 
       - name: Configurar projeto
         run: |
-          mkdir build
-          cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
 
       - name: Compilar plugin
         run: |
